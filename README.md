@@ -1,7 +1,5 @@
 # Chatbot FURIA Esports - CS:GO
 
-![FURIA Logo](https://furia.gg/wp-content/uploads/2020/09/furia-logo-dark.png)
-
 ## Descrição
 
 Chatbot desenvolvido para os fãs do time de CS:GO da FURIA, proporcionando interações via Telegram, Web ou App. O bot oferece informações sobre jogadores, próximos jogos, resultados recentes e notícias do time.
