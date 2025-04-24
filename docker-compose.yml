@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "${API_PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+      - TZ=America/Sao_Paulo
+      - MONGO_URI=mongodb://mongo:27017/${MONGO_DB:-chatbot}
+      - SQLITE_PATH=/data/${SQLITE_DB:-chatbot.db}
+    volumes:
+      - database_volume:/data
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - chatbot-network
+
+  mongo:
+    image: mongo:7.0
+    container_name: mongo
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./docker/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB:-chatbot}
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017 --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - chatbot-network
+
+volumes:
+  database_volume:
+  mongodb_data:
+
+networks:
+  chatbot-network:
+    driver: bridge  
